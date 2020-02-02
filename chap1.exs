@@ -27,5 +27,46 @@ IO.puts velocity
 # PROBLEM THREE ---
 # TAX TIME
 
-apply_tax = fn(cost) -> IO.puts "Price: #{cost * 1.05} - Tax: #{cost * 0.05}" end
-Enum.each [12.5, 30.99, 250.49, 18.80], fn(x) -> IO.puts "Price: #{x * 1.12} - Tax: #{x * 0.12}" end
+to_dollers = fn(number) -> :erlang.float_to_binary(number, [decimals: 2]) end
+Enum.each [12.5, 30.99, 250.49, 18.80], fn(x) -> IO.puts "Price: #{to_dollers.(x * 1.12)} - Tax: #{to_dollers.(x * 0.12)}" end
+
+# PROBLEM FOUR ---
+# Matchstick Factory
+# large box holds 50
+# medium holds 20
+# small holds 5
+
+defmodule MatchstickFactory  do
+  def boxes(match_count, boxes \\ %{"large" => 0, "medium" => 0, "small" => 0, "remaining" => 0} ) do
+    IO.inspect boxes
+    if match_count >= 50 do
+        updated_boxes = MatchstickFactory.match_matchbox_size("large", boxes)
+        MatchstickFactory.boxes(match_count - 50, updated_boxes)
+    else
+      if match_count >= 20 do
+      updated_boxes = MatchstickFactory.match_matchbox_size("medium",  boxes)
+      MatchstickFactory.boxes(match_count - 20, updated_boxes)
+      else
+        if match_count >= 5 do
+          updated_boxes = MatchstickFactory.match_matchbox_size("small",  boxes)
+          MatchstickFactory.boxes(match_count - 5, updated_boxes)
+        else
+          updated_boxes_tuple = Map.get_and_update!(boxes, "remaining", fn val -> {val, match_count} end)
+          elem(updated_boxes_tuple, 1)
+        end
+      end
+    end
+  end
+
+
+
+  def match_matchbox_size(box_name, boxes) do
+    updated_boxes_tuple = Map.get_and_update!(boxes, box_name, fn val ->
+        {val, val+1}
+    end)
+    elem(updated_boxes_tuple, 1)
+  end
+end
+
+order_details = MatchstickFactory.boxes(98)
+IO.inspect order_details
