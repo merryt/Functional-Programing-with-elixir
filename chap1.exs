@@ -23,3 +23,6 @@ time_in_hours = 4
 time_in_minutes = time_in_hours * 60
 velocity = distance_traveled/time_in_minutes
 IO.puts velocity
+
+# PROBLEM THREE ---
+# TAX TIME
