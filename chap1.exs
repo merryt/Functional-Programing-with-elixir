@@ -38,7 +38,6 @@ Enum.each [12.5, 30.99, 250.49, 18.80], fn(x) -> IO.puts "Price: #{to_dollers.(x
 
 defmodule MatchstickFactory  do
   def boxes(match_count, boxes \\ %{"large" => 0, "medium" => 0, "small" => 0, "remaining" => 0} ) do
-    IO.inspect boxes
     if match_count >= 50 do
         updated_boxes = MatchstickFactory.match_matchbox_size("large", boxes)
         MatchstickFactory.boxes(match_count - 50, updated_boxes)
@@ -68,5 +67,20 @@ defmodule MatchstickFactory  do
   end
 end
 
-order_details = MatchstickFactory.boxes(98)
+order_details = MatchstickFactory.boxes(300)
 IO.inspect order_details
+
+IO.puts "--now with out recursion--"
+starting_value =  300
+large_count = div(starting_value, 50)
+after_large = rem(starting_value, 50)
+med_count = div(after_large, 20)
+after_med = rem(after_large, 20)
+small_count = div(after_med, 5)
+after_small = rem(after_med, 5)
+
+
+IO.puts large_count
+IO.puts med_count
+IO.puts small_count
+IO.puts after_small
