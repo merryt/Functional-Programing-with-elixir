@@ -26,3 +26,6 @@ IO.puts velocity
 
 # PROBLEM THREE ---
 # TAX TIME
+
+apply_tax = fn(cost) -> IO.puts "Price: #{cost * 1.05} - Tax: #{cost * 0.05}" end
+Enum.each [12.5, 30.99, 250.49, 18.80], fn(x) -> IO.puts "Price: #{x * 1.12} - Tax: #{x * 0.12}" end
