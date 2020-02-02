@@ -38,22 +38,20 @@ Enum.each [12.5, 30.99, 250.49, 18.80], fn(x) -> IO.puts "Price: #{to_dollers.(x
 
 defmodule MatchstickFactory  do
   def boxes(match_count, boxes \\ %{"large" => 0, "medium" => 0, "small" => 0, "remaining" => 0} ) do
-    if match_count >= 50 do
+    cond do
+      match_count >= 50 ->
         updated_boxes = MatchstickFactory.match_matchbox_size("large", boxes)
         MatchstickFactory.boxes(match_count - 50, updated_boxes)
-    else
-      if match_count >= 20 do
-      updated_boxes = MatchstickFactory.match_matchbox_size("medium",  boxes)
-      MatchstickFactory.boxes(match_count - 20, updated_boxes)
-      else
-        if match_count >= 5 do
+      match_count >= 20 ->
+        updated_boxes = MatchstickFactory.match_matchbox_size("medium",  boxes)
+        MatchstickFactory.boxes(match_count - 20, updated_boxes)
+      match_count >= 5 ->
           updated_boxes = MatchstickFactory.match_matchbox_size("small",  boxes)
           MatchstickFactory.boxes(match_count - 5, updated_boxes)
-        else
-          updated_boxes_tuple = Map.get_and_update!(boxes, "remaining", fn val -> {val, match_count} end)
-          elem(updated_boxes_tuple, 1)
-        end
-      end
+      true ->
+        updated_boxes_tuple = Map.get_and_update!(boxes, "remaining", fn val -> {val, match_count} end)
+        elem(updated_boxes_tuple, 1)
+
     end
   end
 
@@ -67,11 +65,11 @@ defmodule MatchstickFactory  do
   end
 end
 
-order_details = MatchstickFactory.boxes(300)
+order_details = MatchstickFactory.boxes(98)
 IO.inspect order_details
 
 IO.puts "--now with out recursion--"
-starting_value =  300
+starting_value =  98
 large_count = div(starting_value, 50)
 after_large = rem(starting_value, 50)
 med_count = div(after_large, 20)
@@ -84,3 +82,8 @@ IO.puts large_count
 IO.puts med_count
 IO.puts small_count
 IO.puts after_small
+
+
+IO.puts "-------------"
+test = [%{"name" => "large","size" => 50 },%{"name" => "medium","size" => 20 },%{"name" => "small","size" => 5 }]
+Enum.each(test, fn(x)-> IO.inspect x end)
