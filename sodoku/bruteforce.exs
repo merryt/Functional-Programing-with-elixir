@@ -42,14 +42,14 @@ defmodule Sodoku_solve do
 
 
     # IO.puts "working on: #{x}, #{y}"
-    # IO.inspect Format_puzzle.grid_to_list(new_grid, "In progress Grid")
+    IO.inspect Format_puzzle.grid_to_list(new_grid, "In progress Grid")
     # IO.inspect new_grid
-    # IO.puts "----"
+    is_solved(new_grid)
     cond do
       is_solved(new_grid) == true ->
         new_grid
       y >= 8 && x >= 8 ->
-        new_grid
+        solve(new_grid, 0, 0)
       y >= 8 ->
         solve(new_grid, x+1, 0)
       true ->
@@ -58,39 +58,34 @@ defmodule Sodoku_solve do
   end
 
   def is_solved(new_grid) do
+    # Enum.reduce(new_grid, fn {_k,row} ->
+    #   Enum.reduce_while(row, 0, fn {_k, v}, acc ->
+    #     if v != 0, do: {:cont, acc + 1}, else: {:halt, acc}
+    #   end)
+    # end)
     false
   end
 
   def solve_square(grid, x , y) do
-    row = get_row(grid, x)
-    column = get_column(grid, y)
-    ninth =  get_ninth(grid, x, y)
-    connected_values = Enum.uniq(row ++ column ++ ninth)
-    |> Enum.sort
-
-    if Enum.count(connected_values) == 9 do
-      new_val = Enum.reduce_while(connected_values, 0, fn x, acc ->
-        if acc == x, do: {:cont, acc + 1}, else: {:halt, acc}
-      end)
-      put_in(grid, [x,y], new_val )
-    else
+    if is_empty(grid, x, y) != false do
       grid
+    else
+      row = get_row(grid, x)
+      column = get_column(grid, y)
+      ninth =  get_ninth(grid, x, y)
+      connected_values = Enum.uniq(row ++ column ++ ninth)
+      |> Enum.sort
+
+      if Enum.count(connected_values) == 9 do
+        new_val = Enum.reduce_while(connected_values, 0, fn x, acc ->
+          if acc == x, do: {:cont, acc + 1}, else: {:halt, acc}
+        end)
+        put_in(grid, [x,y], new_val )
+      else
+        grid
+      end
     end
   end
-
-  # def find_next_open_cell(grid, x \\ 0, y \\ 0) do
-  #   # IO.puts "x:#{x} y:#{y} item at that position:#{grid[x][y]}"
-  #   cond do
-  #     is_empty(grid, x, y) == false ->
-  #       {x, y}
-  #     y >= 8 && x >= 8 ->
-  #       {0,0}
-  #     y >= 8 ->
-  #       find_next_open_cell(grid, x+1, 0)
-  #     true ->
-  #       find_next_open_cell(grid, x, y+1)
-  #   end
-  # end
 
   def is_empty(grid, x, y) do
     grid[x][y] != 0
@@ -147,5 +142,5 @@ IO.inspect Format_puzzle.grid_to_list(solved_grid,"Solved Grid")
 
 # IO.inspect Sodoku_solve.get_row(unsolved_grid, 0)
 
-Sodoku_solve.solve(unsolved_grid, 0, 8)
+Sodoku_solve.solve(unsolved_grid, 0, 0)
 |> Format_puzzle.grid_to_list("My try")
