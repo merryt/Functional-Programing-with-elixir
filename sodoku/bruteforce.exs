@@ -71,16 +71,18 @@ defmodule Sodoku_solve do
   def get_ninth(grid, x, y) do
     x_third = div(x, 3)
     y_third = div(y, 3)
-    x_items = [x_third, x_third + 1, x_third + 1]
-    y_items = [y_third, y_third + 1, y_third + 1]
+    x_items = [x_third, x_third + 1, x_third + 2]
+    y_items = [y_third, y_third + 1, y_third + 2]
 
 
-    Enum.each(x_third, fn x ->
-      IO.puts(x)
+    Enum.flat_map_reduce(x_items, 0, fn x, acc ->
+      Enum.flat_map_reduce(y_items, 0, fn y, acc ->
+        IO.puts grid[x][y]
+        {[grid[x][y]], acc + 1}
+      end)
     end)
-
-
   end
+
 end
 
 
@@ -108,3 +110,4 @@ IO.inspect Format_puzzle.grid_to_list(unsolved_grid, "unsolved_grid")
 
 IO.inspect Sodoku_solve.get_row(unsolved_grid, 0)
 IO.inspect Sodoku_solve.get_column(unsolved_grid, 0)
+IO.inspect Sodoku_solve.get_ninth(unsolved_grid, 0, 0)
