@@ -112,7 +112,7 @@ end
 
 
 # if needed use https://www.poeticoding.com/processing-large-csv-files-with-elixir-streams/ for the final bit
-sodoku_puzzles = File.read!("sodoku_data_single.csv")
+sodoku_puzzles = File.read!("sudoku.csv")
 |> String.split("\n")
 |> Enum.map(&String.split(&1, ","))
 |> Enum.filter(fn
@@ -123,16 +123,28 @@ end)
 
 
 
-[first_puzzle | _puzzles ] = sodoku_puzzles
-[unsolved, solved] = first_puzzle
-unsolved_grid = Format_puzzle.into_map(unsolved)
-solved_grid = Format_puzzle.into_map(solved)
+# [first_puzzle | puzzles ] = sodoku_puzzles
+# [unsolved, solved] = first_puzzle
 
 
-IO.inspect Format_puzzle.grid_to_list(unsolved_grid, "Unsolved Grid")
-IO.inspect Format_puzzle.grid_to_list(solved_grid,"Solved Grid")
+Enum.each(sodoku_puzzles, fn puzzle ->
+  [unsolved, solved] = puzzle
+  unsolved_grid = Format_puzzle.into_map(unsolved)
+  solved_grid = Format_puzzle.into_map(solved)
+  IO.inspect Format_puzzle.grid_to_list(unsolved_grid, "Unsolved Grid")
+  IO.inspect Format_puzzle.grid_to_list(solved_grid,"Solved Grid")
 
-# IO.inspect Sodoku_solve.get_row(unsolved_grid, 0)
+  Sodoku_solve.solve(unsolved_grid, 0, 0)
+  |> Format_puzzle.grid_to_list("My try")
 
-Sodoku_solve.solve(unsolved_grid, 0, 0)
-|> Format_puzzle.grid_to_list("My try")
+end)
+# unsolved_grid = Format_puzzle.into_map(unsolved)
+# solved_grid = Format_puzzle.into_map(solved)
+
+
+
+# IO.inspect Format_puzzle.grid_to_list(unsolved_grid, "Unsolved Grid")
+# IO.inspect Format_puzzle.grid_to_list(solved_grid,"Solved Grid")
+
+# Sodoku_solve.solve(unsolved_grid, 0, 0)
+# |> Format_puzzle.grid_to_list("My try")
