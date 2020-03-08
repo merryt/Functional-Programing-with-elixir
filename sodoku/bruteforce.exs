@@ -40,11 +40,6 @@ defmodule Sodoku_solve do
 
     new_grid = solve_square(grid, x, y)
 
-
-    # IO.puts "working on: #{x}, #{y}"
-    IO.inspect Format_puzzle.grid_to_list(new_grid, "In progress Grid")
-    # IO.inspect new_grid
-    is_solved(new_grid)
     cond do
       is_solved(new_grid) == true ->
         new_grid
@@ -57,13 +52,10 @@ defmodule Sodoku_solve do
     end
   end
 
-  def is_solved(new_grid) do
-    # Enum.reduce(new_grid, fn {_k,row} ->
-    #   Enum.reduce_while(row, 0, fn {_k, v}, acc ->
-    #     if v != 0, do: {:cont, acc + 1}, else: {:halt, acc}
-    #   end)
-    # end)
-    false
+  def is_solved(grid) do
+    Enum.all?(grid, fn {_k,row} ->
+      Enum.all?(row, fn {_k,value} -> value != 0 end)
+    end)
   end
 
   def solve_square(grid, x , y) do
